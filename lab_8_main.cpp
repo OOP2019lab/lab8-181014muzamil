@@ -1,76 +1,127 @@
-#include <iostream>
-#include "Date.h"
-using namespace std;
+#include"Date.h";
 
-/*
-Following is the program that shows how to use the class Date
-*/
-
-int main()
+Date::Date()
 {
+    month=1;
+    year=2000;
+    date=1;
+}
 
-	/*
-	Create appropriate constructors
-	1)	parameterized constructor that takes, month, date, year. 
-			month => 1 - 12
-			date  => 1 - 30 you can assume every month has 30 days 
-			year  => 1000 - 9999 any four digit number
+Date::Date(int m,int d,int y)
+{
+	if(m>0 && m<13)
+		month=m; 
+	else if((m>12 || m<1) || (d<0 || d>30) || (y<1000 || y>9999))
+	  {
+     	  month=1;
+	      date=1;	 
+	      year=2000;
+		  return;
+	   }
 
-	2)	default constructor that sets the date to January 1, 2000
-	*/
-	Date d1(12, 27, 2010); // December 27, 2010
-	Date d2(13, 27, 2010); // Month cannot be greater than 12, defaults to January 1, 2000
-	Date d3; // Defaults to January 1, 2000
+	if(d>0 && d<31)
+		date=d; 
+	else if((m>12 || m<1) || (d<0 || d>30) || (y<1000 || y>9999))
+	  {
+     	  month=1;
+	      date=1;	 
+	      year=2000;
+		  return;
+	   }
 
+	if(y>=1000 && y<=9999)
+		year=y;
+
+	else if((m>12 || m<1) || (d<0 || d>30) || (y<1000 || y>9999))
+	  {
+     	  month=1;
+	      date=1;	 
+	      year=2000;
+	      return;
+	  }
+}
+
+
+
+ostream & operator<<(ostream & out,const Date & mydate)
+{
+static string monthNames[13] = { "", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+
+    int m=mydate.month;
+    out<<monthNames[m];
+
+	out<<mydate.date;
+	out<<","<<mydate.year<<endl;
+    return out;
+}
+ 
+bool Date::operator==(const Date & mydate)
+{
+	if(mydate.month==month && mydate.year==year && mydate.date==date)
+		return true;
+	else 
+		return false;
+}
+
+istream& operator>>(istream& inobj,Date & mydate)
+{
+	cout<<"Enter Month,Date & Year"<<endl;
+	inobj >> mydate.month;
+	inobj >> mydate.date;
+	inobj >> mydate.year;
+	return inobj;
+}
+
+Date Date::operator+(int i)
+{
+    date=date+i;
+	if(date>30)
+	{
+		month++;
+		year++;
+		date=1;
+	}
+	return *this;
+}
+
+const Date & Date::operator=(const Date & mydate)
+{
+	date=mydate.date;
+	month=mydate.month;
+	year=mydate.year;
+	return *this;
+}
+
+Date & Date::operator--(int u)
+{
+	Date *b=new Date();
+	b->date=this->date;
+	b->month=this->month;
+	b->year=this->year;
+	--(this->date);
+	return *b;
+}
+
+Date & Date::operator--()
+{
+	this->date--;
+	return * this;
+}
+
+int & Date::operator[](int c)
+{
+	if(c!=0 || c!=1 || c!=2)
+	{
+		cout<<"Incorrect Input"<<endl;
+	}
+	else
+	{
+	if(c==0)
+		return date;
+	if(c==1)
+		return month;
+	if(c==2)
+       return year;
+	}
 	
-	// Overload the << operator to perform the following printing
-	cout << "Date 1 is " << d1; // prints December 27, 2010
-	cout << "Date 2 is " << d2; // prints January 1, 2000
-	cout << "Date 3 is " << d3; // prints January 1, 2000
-
-	// Overload equality operator == 
-	if (d2 == d3)
-	{
-		cout << "Date 2 " << d2 << " and Date 3 " << d3 << " are equal";
-	}
-	else
-	{
-		cout << "Date 2" << d2 << " and Date 3 " << d3 << " are not equal";
-	}
-
-	// Overload the stream insertion operator >> 
-	cin >> d3; // Enter todays date
-	cout << "Date 3 is changed and now is " << d3;
-
-	if (d2 == d3)
-	{
-		cout << "Date 2 " << d2 << " and Date 3 " << d3 << " are equal";
-	}
-	else
-	{
-		cout << "Date 2" << d2 << " and Date 3 " << d3 << " are not equal";
-	}
-
-	// Overload the addition operator + to add days to date
-	// Overload the assignment operator "=", to store the result
-	d1 = d1 + 1; // This adds a day to date d1 and stores it pack in d1
-	cout << "Date 1 is " << d1; // prints December 28, 2010
-
-	d1 = d1 + 3;
-	cout << "Date 1 is " << d1; // prints January, 2011
-
-	//Overload the prefix decrement operator "--object"
-	cout << " Testing the prefix decrement operator" << endl;
-	cout << "d3 is " << d3 << endl;
-	cout << "--d3 is " << --d3 << endl;
-	cout << "d3 is " << d3 << endl;
-
-	//Overload the postfix decrement operator "--object"
-	cout << " Testing the postfix decrement operator" << endl;
-	cout << "d3 is " << d3 << endl;
-	cout << "d3-- is " << d3-- << endl;
-	cout << "d3 is " << d3 << endl;
-
-	system("pause");
-	return 0;
 }
